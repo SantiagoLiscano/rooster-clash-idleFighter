@@ -1,6 +1,6 @@
 import { wait } from './utils';
 
-import type { BattleEffect,BattleState } from '@/types/battle';
+import type { BattleEffect, BattleState } from '@/types/battle';
 import type { Combatant } from '@/types/fighter';
 import type { Fighter } from '@/types/fighter';
 

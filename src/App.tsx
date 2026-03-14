@@ -153,7 +153,8 @@ export default function App() {
             left: payload.left ?? current.left,
             right: payload.right ?? current.right,
             images: payload.images ?? current.images,
-            effect: payload.effect !== undefined ? payload.effect : current.effect,
+            effect:
+              payload.effect !== undefined ? payload.effect : current.effect,
             modeText: 'Local Mode',
           };
         });
@@ -226,7 +227,9 @@ export default function App() {
           onRefreshOpponents={() => setOpponents(generateOpponents())}
           onSelectPlayer={setSelectedPlayerId}
           onSelectOpponent={setSelectedOpponentId}
-          onStartBattle={() => { void handleStartBattle(); }}
+          onStartBattle={() => {
+            void handleStartBattle();
+          }}
           canStartBattle={canStartBattle}
           onOpenColorEditor={setColorEditorFighterId}
         />

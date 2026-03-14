@@ -1,5 +1,5 @@
 import { randomInt, shuffle } from './utils';
-import { archetypes, getRandomColor,rivalPool } from '../data/characters';
+import { archetypes, getRandomColor, rivalPool } from '../data/characters';
 
 import type { Fighter, FighterArchetypes } from '@/types/fighter';
 

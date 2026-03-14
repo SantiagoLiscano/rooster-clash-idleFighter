@@ -13,7 +13,15 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'node_modules', 'coverage', '.gemini', 'eslint.config.js'] },
+  {
+    ignores: [
+      'dist',
+      'node_modules',
+      'coverage',
+      '.gemini',
+      'eslint.config.js',
+    ],
+  },
   {
     extends: [
       js.configs.recommended,
@@ -145,5 +153,5 @@ export default tseslint.config(
       globals: globals.node,
     },
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 );

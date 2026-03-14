@@ -14,11 +14,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
+    "types": ["vitest/globals", "@testing-library/jest-dom"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
     "skipLibCheck": true
   },
-  "include": ["src", "vite.config.mts"]
+  "include": ["src", "vite.config.mts", "vitest.setup.ts"]
 }

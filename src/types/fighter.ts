@@ -50,7 +50,7 @@ export type FighterStats = {
 /**
  * Rarity tiers for fighters. Affects drop rates and power.
  */
-export type FighterRarity = 'common' | 'rare' | 'enemy'
+export type FighterRarity = 'common' | 'rare' | 'enemy';
 
 /**
  * Complete fighter entity with all stats and metadata.
