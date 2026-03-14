@@ -1,13 +1,20 @@
-import React from "react";
+import type { FighterCardProps } from "@/types/ui";
 
-export function FighterCard({ fighter, isSelected, selectionType, onSelect, showXp = true, onEditColor }) {
-    const selectedClass = isSelected ? `is-${selectionType}` : "";
+export function FighterCard({
+  fighter,
+  isSelected,
+  playerSide,
+  onSelect,
+  showXp = true,
+  onEditColor,
+}: FighterCardProps) {
+    const selectedClass = isSelected ? `is-${playerSide}` : "";
 
     return (
         <article className={`fighter-option fighter-option--redesigned ${selectedClass}`.trim()} onClick={onSelect}>
             <div className="fighter-name-row">
                 <h4 className="fighter-title">{fighter.name}</h4>
-                {selectionType === "player" && (
+                {playerSide === "player" && onEditColor && (
                     <div className="fighter-edit-actions">
                         <span onClick={(e) => { e.stopPropagation(); onEditColor(); }} title="Edit Color">🎨</span>
                     </div>
@@ -21,7 +28,7 @@ export function FighterCard({ fighter, isSelected, selectionType, onSelect, show
             </div>
 
             <div className="fighter-stats-list" style={{ fontSize: '1rem' }}>
-                <p>❤️ HP: {fighter.maxHp}/{fighter.maxHp}</p>
+                <p>❤️ HP: {fighter.hp}/{fighter.hp}</p>
                 <p>⚔️ Attack: {fighter.attack}</p>
                 <p>🛡️ Defense: {fighter.defense}</p>
                 <p>⚡ Speed: {fighter.speed}</p>

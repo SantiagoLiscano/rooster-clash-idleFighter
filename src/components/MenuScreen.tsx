@@ -1,6 +1,6 @@
-import React from "react";
+import type { MenuScreenProps } from "@/types/ui";
 
-export function MenuScreen({ onNewGame, onContinue, canContinue, saveStatus }) {
+export function MenuScreen({ onNewGame, onContinue, canContinue, saveStatus }: MenuScreenProps) {
     return (
         <section className="screen screen--active">
             <div className="hero-panel">

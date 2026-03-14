@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { VisualGallo } from './VisualGallo.jsx';
-import { diccionarioColores } from '../data/characters.js';
+import { useEffect, useState } from 'react';
+import { VisualGallo } from './VisualGallo';
+import { diccionarioColores } from '../data/characters';
+import type { ColorEditorModalProps } from '@/types/ui';
 
-export function ColorEditorModal({ fighter, onClose, onSave }) {
-    const [tempColor, setTempColor] = useState(fighter?.color || '#FFCB05');
+export function ColorEditorModal({ fighter, onClose, onSave }: ColorEditorModalProps) {
+    const [tempColor, setTempColor] = useState<string>(fighter?.color || '#FFCB05');
     const [previewPose, setPreviewPose] = useState('defensa');
 
     useEffect(() => {
@@ -24,7 +25,7 @@ export function ColorEditorModal({ fighter, onClose, onSave }) {
                 </div>
                 <div className="modal-body">
                     <div className="color-list">
-                        {diccionarioColores.map(c => (
+                    {diccionarioColores.map((c: any) => (
                             <div key={c.hex} className={`color-item ${c.hex === tempColor ? 'selected' : ''}`} onClick={() => setTempColor(c.hex)}>
                                 <div className="color-preview-dot" style={{ backgroundColor: c.hex }}></div>
                                 <span className="color-name">{c.nombre}</span>
@@ -33,7 +34,7 @@ export function ColorEditorModal({ fighter, onClose, onSave }) {
                     </div>
                     <div className="preview-panel">
                         <div className="preview-svg-container">
-                            <VisualGallo tipo={previewPose} color={tempColor} isRight={false} />
+                            <VisualGallo type={previewPose} color={tempColor} isRight={false} />
                         </div>
                         <button className="button button--ghost" onClick={() => setPreviewPose(prev => prev === 'defensa' ? 'ataque' : 'defensa')}>
                             🔄 View Pose: <span>{previewPose === 'defensa' ? 'Defense' : 'Attack'}</span>

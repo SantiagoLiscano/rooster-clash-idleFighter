@@ -1,11 +1,11 @@
-import React from "react";
-import { FighterCard } from "./FighterCard.jsx";
+import { FighterCard } from "./FighterCard";
+import type { SelectionScreenProps } from "@/types/ui";
 
 export function SelectionScreen({
-    roster, opponents, selectedPlayerId, selectedOpponentId,
+    rooster, opponents, selectedPlayerId, selectedOpponentId,
     onBack, onRefreshOpponents, onSelectPlayer, onSelectOpponent, onStartBattle, canStartBattle,
     onOpenColorEditor
-}) {
+}: SelectionScreenProps) {
     return (
         <section className="screen screen--active">
             <header className="topbar">
@@ -23,11 +23,11 @@ export function SelectionScreen({
                         <div><p className="eyebrow">Step 1</p><h3>Select your Rooster</h3></div>
                     </div>
                     <div className="card-grid">
-                        {roster.map((fighter) => (
+                        {rooster.map((fighter) => (
                             <FighterCard
                                 key={fighter.id} fighter={fighter}
                                 isSelected={fighter.id === selectedPlayerId}
-                                selectionType="player"
+                                playerSide="player"
                                 onSelect={() => onSelectPlayer(fighter.id)}
                                 onEditColor={() => onOpenColorEditor(fighter.id)}
                             />
@@ -47,9 +47,10 @@ export function SelectionScreen({
                             <FighterCard
                                 key={fighter.id} fighter={fighter}
                                 isSelected={fighter.id === selectedOpponentId}
-                                selectionType="opponent"
+                                playerSide="opponent"
                                 onSelect={() => onSelectOpponent(fighter.id)}
                                 showXp={false}
+                                onEditColor={() => {}}
                             />
                         ))}
                     </div>
