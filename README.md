@@ -1,52 +1,77 @@
 # Rooster Clash
 
-Initial frontend prototype for a 1v1 rooster fighting game built with React and Vite.
+A 1v1 rooster fighting game — frontend prototype built with **React 19**, **Vite 8**, and **TypeScript**.
 
-## Current state
+## Requirements
 
-- React + Vite setup with hot reload
-- Local roster selection flow
-- Auto-resolved battles with battle log
-- Scalable fighter data model with archetypes
-- Combat system tuned to feel longer and less burst-heavy
+- **Node.js >=22**
+- **npm >=10**
 
-## Run locally
+## Stack
 
-Install dependencies:
+- **React 19** + **Vite 8** + **TypeScript 5**
+- **ESLint 9** (flat config) + **Prettier 3**
+- **Vitest 4** + **React Testing Library**
+- **Husky** + **lint-staged** (pre-commit hooks)
+- **GitHub Actions** CI
 
-```powershell
-npm.cmd install
+## Install & Run
+
+```bash
+npm install
+npm run dev        # dev server → http://localhost:5173
+npm run build      # production build
+npm run preview    # preview production build
 ```
 
-Start the dev server:
+## Scripts
 
-```powershell
-npm.cmd run dev
+| Command              | Description                     |
+| -------------------- | ------------------------------- |
+| `npm run dev`        | Start the dev server            |
+| `npm run build`      | Build for production            |
+| `npm run typecheck`  | Run TypeScript (`tsc --noEmit`) |
+| `npm run lint`       | Run ESLint                      |
+| `npm run lint:fix`   | Run ESLint with auto-fix        |
+| `npm run format`     | Format all files with Prettier  |
+| `npm run test`       | Run Vitest (single run)         |
+| `npm run test:watch` | Run Vitest in watch mode        |
+| `npm run dev:check`  | Format + typecheck + lint:fix   |
+
+## Pre-commit Hooks
+
+On every `git commit`, **Husky** triggers **lint-staged** which runs on staged files:
+
+- `eslint --fix`
+- `prettier --write`
+- `tsc --noEmit --incremental false`
+- `vitest related --run`
+
+Commit is blocked if any check fails.
+
+## CI (GitHub Actions)
+
+Runs on every push and PR:
+
+1. Format check (`prettier --check`)
+2. Typecheck (`tsc --noEmit`)
+3. Lint (`eslint`)
+4. Tests (`vitest --run`)
+
+## Project Structure
+
+```
+src/
+├── App.tsx              # Main app flow
+├── components/          # React UI components
+├── core/                # Combat, storage, opponent logic
+├── data/                # Starter fighters & archetypes
+├── styles/              # CSS
+└── types/               # TypeScript type definitions
 ```
 
-Build for production:
+## Branch Strategy
 
-```powershell
-npm.cmd run build
-```
-
-Preview the production build:
-
-```powershell
-npm.cmd run preview
-```
-
-## Project structure
-
-- `src/App.jsx`: main app flow
-- `src/components/`: React UI components
-- `src/core/`: combat, storage, and opponent generation logic
-- `src/data/`: starter fighters and archetypes
-- `src/styles/`: app styles
-- `public/`: battle sprites
-
-## Notes
-
-- This is still a frontend-only phase.
-- Multiplayer backend is not connected yet.
-- Some temporary backup image files may still exist in the project root from asset migration cleanup.
+- `main` is protected — direct pushes are blocked
+- All changes must go through a **pull request**
+- CI must pass before merging
