@@ -1,10 +1,10 @@
-import type { Combatant } from "@/types/fighter";
-import { wait } from "./utils";
-import type { Fighter } from "@/types/fighter";
+import type { Combatant } from '@/types/fighter';
+import { wait } from './utils';
+import type { Fighter } from '@/types/fighter';
 
 const battleImages = {
-  player: { idle: "defensa", attack: "ataque", ko: "vencido" },
-  opponent: { idle: "defensa", attack: "ataque", ko: "vencido" }
+  player: { idle: 'defensa', attack: 'ataque', ko: 'vencido' },
+  opponent: { idle: 'defensa', attack: 'ataque', ko: 'vencido' },
 } as const;
 
 export function createCombatant(fighter: Fighter): Combatant {
@@ -27,17 +27,14 @@ function clamp(value: number, min: number, max: number): number {
 
 export function calculateInitiative(
   a: Fighter & { hp?: number },
-  b: Fighter & { hp?: number }
+  b: Fighter & { hp?: number },
 ): [Fighter & { hp?: number }, Fighter & { hp?: number }] {
   const scoreA = a.speed + Math.random() * 12;
   const scoreB = b.speed + Math.random() * 12;
   return scoreA >= scoreB ? [a, b] : [b, a];
 }
 
-export function resolveAttack(
-  attacker: Combatant,
-  defender: Combatant
-) {
+export function resolveAttack(attacker: Combatant, defender: Combatant) {
   const attackTempo = randomMultiplier(attacker.variance);
   const defenseTempo = randomMultiplier(defender.variance);
   const attackRoll = rollDice();
@@ -50,7 +47,7 @@ export function resolveAttack(
   const dodgeChance = clamp(
     0.04 + defender.dodgeBonus + (defender.speed - attacker.speed) * 0.0015,
     0.02,
-    0.22
+    0.22,
   );
   const didDodge = Math.random() < dodgeChance;
 
@@ -61,21 +58,21 @@ export function resolveAttack(
       damage: 0,
       didCrit: false,
       didDodge: true,
-      didBlock: false
+      didBlock: false,
     };
   }
 
   const critChance = clamp(
     0.06 + attacker.critBonus + (attacker.speed - defender.speed) * 0.001,
     0.04,
-    0.2
+    0.2,
   );
   const didCrit = Math.random() < critChance;
 
   const blockChance = clamp(
     0.08 + defender.blockBonus + (defender.defense - attacker.attack) * 0.0008,
     0.03,
-    0.24
+    0.24,
   );
   const didBlock = Math.random() < blockChance;
 
@@ -97,16 +94,16 @@ export function resolveAttack(
     damage,
     didCrit,
     didDodge,
-    didBlock
+    didBlock,
   };
 }
 
 export function applyVictoryRewards(
   playerRoster: Fighter[],
   playerId: string,
-  opponent: Fighter
+  opponent: Fighter,
 ) {
-  const fighter = playerRoster.find(item => item.id === playerId);
+  const fighter = playerRoster.find((item) => item.id === playerId);
   if (!fighter) return null;
 
   const weightedHpDiff = Math.round((opponent.hp - fighter.hp) * 0.5);
@@ -153,13 +150,13 @@ export async function runLocalCombat({
   onUpdate,
   onLog,
   checkSurrender,
-  onTurnComplete
+  onTurnComplete,
 }: RunLocalCombatArgs) {
   const left = createCombatant(player);
   const right = createCombatant(opponent);
   const [first, second] = calculateInitiative(left, right) as [
     Combatant,
-    Combatant
+    Combatant,
   ];
   let round = 1;
 
@@ -179,7 +176,7 @@ export async function runLocalCombat({
       right,
       onUpdate,
       onLog,
-      checkSurrender
+      checkSurrender,
     );
     if (onTurnComplete) onTurnComplete();
     if (left.hp <= 0 || right.hp <= 0 || (checkSurrender && checkSurrender()))
@@ -192,7 +189,7 @@ export async function runLocalCombat({
       right,
       onUpdate,
       onLog,
-      checkSurrender
+      checkSurrender,
     );
     if (onTurnComplete) onTurnComplete();
 
@@ -213,7 +210,7 @@ async function executeTurn(
   right: Combatant,
   onUpdate: (state: any) => void,
   onLog: (message: string, type?: string) => void,
-  checkSurrender?: () => boolean
+  checkSurrender?: () => boolean,
 ) {
   // 1. Mostrar pose de ataque y limpiar efectos anteriores
   onUpdate({
@@ -232,17 +229,17 @@ async function executeTurn(
           ? battleImages.opponent.attack
           : right.hp <= 0
             ? battleImages.opponent.ko
-            : battleImages.opponent.idle
-    }
+            : battleImages.opponent.idle,
+    },
   });
 
-  onLog(`${attacker.name}'s turn!`, "turn");
+  onLog(`${attacker.name}'s turn!`, 'turn');
   await wait(320);
   if (checkSurrender?.()) return;
 
   const result = resolveAttack(attacker, defender);
   onLog(
-    `${attacker.name.toLowerCase()} attacks with <b>${result.attackPower}</b> / ${defender.name.toLowerCase()} defends with <b>${result.defensePower}</b>`
+    `${attacker.name.toLowerCase()} attacks with <b>${result.attackPower}</b> / ${defender.name.toLowerCase()} defends with <b>${result.defensePower}</b>`,
   );
   await wait(440);
   if (checkSurrender?.()) return;
@@ -252,27 +249,27 @@ async function executeTurn(
 
   if (result.didDodge) {
     effectPayload = {
-      target: defender.id === left.id ? "player" : "opponent",
-      type: "dodge"
+      target: defender.id === left.id ? 'player' : 'opponent',
+      type: 'dodge',
     };
     onLog(`${defender.name} dodges at the last second.`);
   } else {
     if (result.didBlock) {
       effectPayload = {
-        target: defender.id === left.id ? "player" : "opponent",
-        type: "shield"
+        target: defender.id === left.id ? 'player' : 'opponent',
+        type: 'shield',
       };
       onLog(`${defender.name} blocks part of the impact.`);
       await wait(180);
     } else if (result.damage > 0) {
       effectPayload = {
-        target: defender.id === left.id ? "player" : "opponent",
-        type: "claws"
+        target: defender.id === left.id ? 'player' : 'opponent',
+        type: 'claws',
       };
     } else {
       effectPayload = {
-        target: defender.id === left.id ? "player" : "opponent",
-        type: "shield"
+        target: defender.id === left.id ? 'player' : 'opponent',
+        type: 'shield',
       };
       onLog(`${defender.name} stops the strike.`);
     }
@@ -304,8 +301,8 @@ async function executeTurn(
           ? battleImages.opponent.attack
           : right.hp <= 0
             ? battleImages.opponent.ko
-            : battleImages.opponent.idle
-    }
+            : battleImages.opponent.idle,
+    },
   });
 
   // 4. Si hubo un efecto, esperar 1 segundo para que la animación termine
@@ -324,8 +321,8 @@ async function executeTurn(
     images: {
       player: left.hp <= 0 ? battleImages.player.ko : battleImages.player.idle,
       opponent:
-        right.hp <= 0 ? battleImages.opponent.ko : battleImages.opponent.idle
-    }
+        right.hp <= 0 ? battleImages.opponent.ko : battleImages.opponent.idle,
+    },
   });
 
   await wait(1320);

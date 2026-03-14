@@ -1,13 +1,13 @@
-import { archetypes, rivalPool, getRandomColor } from "../data/characters";
-import { randomInt, shuffle } from "./utils";
-import type { Fighter, FighterArchetypes } from "@/types/fighter";
+import { archetypes, rivalPool, getRandomColor } from '../data/characters';
+import { randomInt, shuffle } from './utils';
+import type { Fighter, FighterArchetypes } from '@/types/fighter';
 
 const rivalArchetypes: Array<FighterArchetypes> = [
-  "balanced",
-  "tank",
-  "agile",
-  "aggressive",
-  "technical"
+  'balanced',
+  'tank',
+  'agile',
+  'aggressive',
+  'technical',
 ];
 
 type RivalArchetype = (typeof rivalArchetypes)[number];
@@ -22,9 +22,9 @@ export function generateOpponents(count = 2): Fighter[] {
       const swing = () => randomInt(-4, 4);
 
       return {
-        id: `rival-${index}-${name.toLowerCase().replace(/\s+/g, "-")}`,
+        id: `rival-${index}-${name.toLowerCase().replace(/\s+/g, '-')}`,
         name,
-        rarity: "enemy",
+        rarity: 'enemy',
         archetype,
         level: randomInt(1, 4),
         xp: 0,
@@ -36,7 +36,7 @@ export function generateOpponents(count = 2): Fighter[] {
         critBonus: template.critBonus,
         dodgeBonus: template.dodgeBonus,
         blockBonus: template.blockBonus,
-        variance: template.variance
+        variance: template.variance,
       };
     });
 }

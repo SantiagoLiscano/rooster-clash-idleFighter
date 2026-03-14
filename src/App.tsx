@@ -1,24 +1,24 @@
-import { useRef, useState } from "react";
-import { generateOpponents } from "./core/opponents";
-import { applyVictoryRewards, runLocalCombat } from "./core/combat";
+import { useRef, useState } from 'react';
+import { generateOpponents } from './core/opponents';
+import { applyVictoryRewards, runLocalCombat } from './core/combat';
 import {
   clearRoster,
   hasSavedRoster,
   loadRoster,
-  saveRoster
-} from "./core/storage";
-import { cloneRoster, starterRoster } from "./data/characters";
-import { BattleArena } from "./components/BattleArena.jsx";
-import { MenuScreen } from "./components/MenuScreen.jsx";
-import { SelectionScreen } from "./components/SelectionScreen.jsx";
-import { ColorEditorModal } from "./components/ColorEditorModal.jsx";
-import { Fighter } from "./types/fighter.js";
-import { Entity } from "./types/core.js";
+  saveRoster,
+} from './core/storage';
+import { cloneRoster, starterRoster } from './data/characters';
+import { BattleArena } from './components/BattleArena.jsx';
+import { MenuScreen } from './components/MenuScreen.jsx';
+import { SelectionScreen } from './components/SelectionScreen.jsx';
+import { ColorEditorModal } from './components/ColorEditorModal.jsx';
+import { Fighter } from './types/fighter.js';
+import { Entity } from './types/core.js';
 import {
   BattleLogEntry,
   BattleLogEntryType,
-  BattleState
-} from "./types/battle.js";
+  BattleState,
+} from './types/battle.js';
 
 function getInitialRoster() {
   const saved = loadRoster();
@@ -26,19 +26,19 @@ function getInitialRoster() {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState("menu");
+  const [screen, setScreen] = useState('menu');
   const [rooster, setRooster] = useState<Fighter[]>(getInitialRoster);
   const [opponents, setOpponents] = useState<Fighter[]>([]);
-  const [selectedPlayerId, setSelectedPlayerId] = useState<Entity["id"] | null>(
-    null
+  const [selectedPlayerId, setSelectedPlayerId] = useState<Entity['id'] | null>(
+    null,
   );
   const [selectedOpponentId, setSelectedOpponentId] = useState<
-    Entity["id"] | null
+    Entity['id'] | null
   >(null);
   const [battleState, setBattleState] = useState<BattleState | null>(null);
   const [battleLog, setBattleLog] = useState<BattleLogEntry[]>([]);
   const [statusText, setStatusText] = useState(
-    hasSavedRoster() ? "Saved progress available" : "No progress available"
+    hasSavedRoster() ? 'Saved progress available' : 'No progress available',
   );
 
   // Modal State
@@ -52,15 +52,15 @@ export default function App() {
   const [isBattleFinished, setIsBattleFinished] = useState(false);
 
   const selectedPlayer =
-    rooster.find(fighter => fighter.id === selectedPlayerId) ?? null;
+    rooster.find((fighter) => fighter.id === selectedPlayerId) ?? null;
   const selectedOpponent =
-    opponents.find(fighter => fighter.id === selectedOpponentId) ?? null;
+    opponents.find((fighter) => fighter.id === selectedOpponentId) ?? null;
   const canStartBattle = Boolean(selectedPlayer && selectedOpponent);
 
   function openMenu() {
-    setScreen("menu");
+    setScreen('menu');
     setStatusText(
-      hasSavedRoster() ? "Saved progress available" : "No progress available"
+      hasSavedRoster() ? 'Saved progress available' : 'No progress available',
     );
   }
 
@@ -69,9 +69,9 @@ export default function App() {
     setOpponents(generateOpponents());
     setSelectedPlayerId(null);
     setSelectedOpponentId(null);
-    setScreen("selection");
+    setScreen('selection');
     setStatusText(
-      hasSavedRoster() ? "Saved progress available" : "No progress available"
+      hasSavedRoster() ? 'Saved progress available' : 'No progress available',
     );
   }
 
@@ -86,20 +86,20 @@ export default function App() {
     openSelection(saved ?? cloneRoster(starterRoster));
   }
 
-  function appendLog(message: string, type: BattleLogEntryType = "default") {
+  function appendLog(message: string, type: BattleLogEntryType = 'default') {
     const entry: BattleLogEntry = {
       id: crypto.randomUUID(),
       message,
-      type
+      type,
     };
 
-    setBattleLog(current => [...current, entry]);
+    setBattleLog((current) => [...current, entry]);
   }
 
   // Lógica para guardar color modificado
   function handleSaveColor(fighterId: string, newColorHex: string) {
-    const updatedRoster = rooster.map(f =>
-      f.id === fighterId ? { ...f, color: newColorHex } : f
+    const updatedRoster = rooster.map((f) =>
+      f.id === fighterId ? { ...f, color: newColorHex } : f,
     );
     setRooster(updatedRoster);
     saveRoster(updatedRoster);
@@ -109,18 +109,26 @@ export default function App() {
   async function handleStartBattle() {
     if (!selectedPlayer || !selectedOpponent) return;
 
-    setScreen("battle");
+    setScreen('battle');
     setBattleLog([]);
     surrenderedRef.current = false;
     setCanSurrender(false);
     setIsBattleFinished(false);
 
     setBattleState({
-      left: { ...selectedPlayer, hp: selectedPlayer.hp, maxHp: selectedPlayer.hp },
-      right: { ...selectedOpponent, hp: selectedOpponent.hp, maxHp: selectedOpponent.hp },
-      images: { player: "defensa", opponent: "defensa" },
+      left: {
+        ...selectedPlayer,
+        hp: selectedPlayer.hp,
+        maxHp: selectedPlayer.hp,
+      },
+      right: {
+        ...selectedOpponent,
+        hp: selectedOpponent.hp,
+        maxHp: selectedOpponent.hp,
+      },
+      images: { player: 'defensa', opponent: 'defensa' },
       effect: null,
-      modeText: "Local Mode"
+      modeText: 'Local Mode',
     });
 
     const result = await runLocalCombat({
@@ -128,10 +136,12 @@ export default function App() {
       opponent: selectedOpponent,
       checkSurrender: () => surrenderedRef.current,
       onTurnComplete: () => setCanSurrender(true), // Habilita rendirse al finalizar 1 turno
-      onLog(message: string, type: string = "default") {
+      onLog(message: string, type: string = 'default') {
         appendLog(
           message,
-          message.startsWith("Intro:") ? "system" : (type as BattleLogEntryType)
+          message.startsWith('Intro:')
+            ? 'system'
+            : (type as BattleLogEntryType),
         );
       },
       onUpdate(payload: any) {
@@ -141,51 +151,51 @@ export default function App() {
           right: payload.right,
           images: payload.images,
           effect: payload.effect,
-          modeText: "Local Mode"
+          modeText: 'Local Mode',
         }));
-      }
+      },
     });
 
     setIsBattleFinished(true);
 
     if (surrenderedRef.current) {
-      appendLog("You have surrendered. Combat abandoned.", "system");
+      appendLog('You have surrendered. Combat abandoned.', 'system');
     } else if (result.winner && result.winner.id === selectedPlayer.id) {
       const updatedRoster = structuredClone(rooster);
       const rewards = applyVictoryRewards(
         updatedRoster,
         selectedPlayer.id,
-        selectedOpponent
+        selectedOpponent,
       );
       if (rewards) {
         setRooster(updatedRoster);
         saveRoster(updatedRoster);
-        appendLog(`${result.winner.name} WINS the battle!`, "winner");
+        appendLog(`${result.winner.name} WINS the battle!`, 'winner');
         appendLog(
-          `XP gained: ${rewards.gainedExp}. Modifier: ${rewards.modifier}.`
+          `XP gained: ${rewards.gainedExp}. Modifier: ${rewards.modifier}.`,
         );
         if (rewards.leveledUp) {
           appendLog(
             `${rewards.fighter.name} reaches level ${rewards.fighter.level}!`,
-            "system"
+            'system',
           );
         }
-        setStatusText("Progress saved");
+        setStatusText('Progress saved');
       }
     } else if (result.winner) {
       saveRoster(rooster);
-      appendLog(`${result.winner.name} WINS the battle!`, "winner");
-      appendLog("Your rooster has been defeated. You gain no experience.");
-      setStatusText("Progress saved");
+      appendLog(`${result.winner.name} WINS the battle!`, 'winner');
+      appendLog('Your rooster has been defeated. You gain no experience.');
+      setStatusText('Progress saved');
     } else {
-      appendLog("Double KO. There is no winner this round.", "system");
+      appendLog('Double KO. There is no winner this round.', 'system');
     }
   }
 
   function handleSurrender() {
     if (
       window.confirm(
-        "Are you sure you want to surrender? Your rooster will lose the round."
+        'Are you sure you want to surrender? Your rooster will lose the round.',
       )
     ) {
       surrenderedRef.current = true;
@@ -193,8 +203,8 @@ export default function App() {
   }
 
   return (
-    <div id="app">
-      {screen === "menu" && (
+    <div id='app'>
+      {screen === 'menu' && (
         <MenuScreen
           onNewGame={handleNewGame}
           onContinue={handleContinue}
@@ -202,7 +212,7 @@ export default function App() {
           saveStatus={statusText}
         />
       )}
-      {screen === "selection" && (
+      {screen === 'selection' && (
         <SelectionScreen
           rooster={rooster}
           opponents={opponents}
@@ -217,7 +227,7 @@ export default function App() {
           onOpenColorEditor={setColorEditorFighterId}
         />
       )}
-      {screen === "battle" && battleState && (
+      {screen === 'battle' && battleState && (
         <BattleArena
           battleState={battleState}
           battleLog={battleLog}
@@ -229,7 +239,7 @@ export default function App() {
       )}
       {colorEditorFighterId && (
         <ColorEditorModal
-          fighter={rooster.find(f => f.id === colorEditorFighterId)}
+          fighter={rooster.find((f) => f.id === colorEditorFighterId)}
           onClose={() => setColorEditorFighterId(null)}
           onSave={handleSaveColor}
         />

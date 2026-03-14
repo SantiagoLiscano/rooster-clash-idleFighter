@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
-import { FighterPanel } from "./FighterPanel";
-import type { BattleArenaProps } from "@/types/ui";
+import { useEffect, useRef } from 'react';
+import { FighterPanel } from './FighterPanel';
+import type { BattleArenaProps } from '@/types/ui';
 
 export function BattleArena({
   battleState,
@@ -8,28 +8,28 @@ export function BattleArena({
   onBackToRoster,
   onSurrender,
   canSurrender,
-  isFinished
+  isFinished,
 }: BattleArenaProps) {
   const logEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [battleLog]);
   return (
-    <section className="screen screen--active">
-      <header className="topbar">
+    <section className='screen screen--active'>
+      <header className='topbar'>
         {isFinished ? (
           <button
-            type="button"
-            className="button button--ghost"
+            type='button'
+            className='button button--ghost'
             onClick={onBackToRoster}
           >
             Back to Roster
           </button>
         ) : (
           <button
-            type="button"
-            className="button button--danger"
+            type='button'
+            className='button button--danger'
             onClick={onSurrender}
             disabled={!canSurrender}
           >
@@ -37,43 +37,43 @@ export function BattleArena({
           </button>
         )}
 
-        <span className="pill">{battleState.modeText}</span>
+        <span className='pill'>{battleState.modeText}</span>
       </header>
 
-      <div className="arena">
+      <div className='arena'>
         <FighterPanel
-          playerSide="player"
+          playerSide='player'
           fighter={battleState.left}
           image={battleState.images.player}
           effect={
-            battleState.effect?.target === "player"
+            battleState.effect?.target === 'player'
               ? battleState.effect.type
               : null
           }
         />
-        <div className="arena-center">
-          <span className="versus">VS</span>
+        <div className='arena-center'>
+          <span className='versus'>VS</span>
         </div>
         <FighterPanel
-          playerSide="opponent"
+          playerSide='opponent'
           fighter={battleState.right}
           image={battleState.images.opponent}
           effect={
-            battleState.effect?.target === "opponent"
+            battleState.effect?.target === 'opponent'
               ? battleState.effect.type
               : null
           }
         />
       </div>
 
-      <section className="panel">
-        <div className="battle-log">
-          {battleLog.map(entry => {
-            let classNames = "log-entry";
-            if (entry.type === "system") classNames += " log-entry--system";
-            else if (entry.type === "turn") classNames += " log-entry--turn";
-            else if (entry.type === "winner")
-              classNames += " log-entry--winner";
+      <section className='panel'>
+        <div className='battle-log'>
+          {battleLog.map((entry) => {
+            let classNames = 'log-entry';
+            if (entry.type === 'system') classNames += ' log-entry--system';
+            else if (entry.type === 'turn') classNames += ' log-entry--turn';
+            else if (entry.type === 'winner')
+              classNames += ' log-entry--winner';
 
             return (
               <p

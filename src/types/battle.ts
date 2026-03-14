@@ -1,11 +1,11 @@
-import type { Entity } from "./core";
-import type { Combatant, Fighter } from "./fighter";
-import { GenericType } from "./generics";
+import type { Entity } from './core';
+import type { Combatant, Fighter } from './fighter';
+import { GenericType } from './generics';
 
 /**
  * Player/opponent distinction for UI and logic.
  */
-export type PlayerSide = "player" | "opponent";
+export type PlayerSide = 'player' | 'opponent';
 
 /**
  * Object containing playerSide property.
@@ -20,7 +20,7 @@ export type PlayerBySide = Record<PlayerSide, Fighter>;
 /**
  * Types of visual and gameplay effects during battle.
  */
-export type BattleEffectType = "dodge" | "shield" | "claws" | string;
+export type BattleEffectType = 'dodge' | 'shield' | 'claws' | string;
 
 /**
  * Battle effect targeting a specific arena side.
@@ -58,7 +58,7 @@ export type BattleState = {
 /**
  * Battle log entry types for different message categories.
  */
-export type BattleLogEntryType = "default" | "system" | "turn" | "winner";
+export type BattleLogEntryType = 'default' | 'system' | 'turn' | 'winner';
 
 /**
  * Single battle log entry with categorized message.

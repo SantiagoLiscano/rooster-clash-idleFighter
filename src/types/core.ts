@@ -22,4 +22,3 @@ export type Color = {
   /** Hex color code or CSS color name (e.g. "#FF5733", "red") */
   color: string;
 };
-

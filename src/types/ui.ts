@@ -1,7 +1,7 @@
-import { BattleLogEntry, BattleState, PlayerSideConfig } from "./battle";
-import { Color } from "./core";
-import type { Combatant, Fighter } from "./fighter";
-import { GenericType } from "./generics";
+import { BattleLogEntry, BattleState, PlayerSideConfig } from './battle';
+import { Color } from './core';
+import type { Combatant, Fighter } from './fighter';
+import { GenericType } from './generics';
 
 /**
  * Props for fighter selection card in roster screen.

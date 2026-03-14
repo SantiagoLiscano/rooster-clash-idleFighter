@@ -1,14 +1,14 @@
-import react from "@vitejs/plugin-react-swc";
-import { defineConfig } from "vite";
-import { fileURLToPath, URL } from "node:url";
+import react from '@vitejs/plugin-react-swc';
+import { defineConfig } from 'vite';
+import { fileURLToPath, URL } from 'node:url';
 
-const srcPath = fileURLToPath(new URL("./src", import.meta.url));
+const srcPath = fileURLToPath(new URL('./src', import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": srcPath,
+      '@': srcPath,
     },
   },
   server: {
@@ -24,14 +24,14 @@ export default defineConfig({
     strictPort: false,
   },
   build: {
-    target: "esnext",
-    sourcemap: process.env.NODE_ENV === "production" ? false : true,
+    target: 'esnext',
+    sourcemap: process.env.NODE_ENV === 'production' ? false : true,
     cssCodeSplit: true,
-    minify: "esbuild",
+    minify: 'esbuild',
     reportCompressedSize: true,
     chunkSizeWarningLimit: 500,
   },
   optimizeDeps: {
-    include: ["react", "react-dom"],
+    include: ['react', 'react-dom'],
   },
 });

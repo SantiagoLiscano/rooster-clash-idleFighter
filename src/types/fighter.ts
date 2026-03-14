@@ -1,4 +1,4 @@
-import type { Color, Entity, Name } from "./core";
+import type { Color, Entity, Name } from './core';
 
 /**
  * Hit points value for fighters and combatants.
@@ -20,11 +20,11 @@ export type MaxHp = {
  * Available fighter archetypes that define combat style.
  */
 export type FighterArchetypes =
-  | "balanced" /** Balanced attack/defense/speed */
-  | "tank" /** High defense, low speed */
-  | "agile" /** High speed, high dodge */
-  | "aggressive" /** High attack, low defense */
-  | "technical"; /** High crit, relies on precision */
+  | 'balanced' /** Balanced attack/defense/speed */
+  | 'tank' /** High defense, low speed */
+  | 'agile' /** High speed, high dodge */
+  | 'aggressive' /** High attack, low defense */
+  | 'technical'; /** High crit, relies on precision */
 
 /**
  * Core combat statistics for fighters.
@@ -50,7 +50,7 @@ export type FighterStats = {
 /**
  * Rarity tiers for fighters. Affects drop rates and power.
  */
-export type FighterRarity = "common" | "rare" | "enemy" | string;
+export type FighterRarity = 'common' | 'rare' | 'enemy' | string;
 
 /**
  * Complete fighter entity with all stats and metadata.
@@ -71,4 +71,4 @@ export interface Fighter extends Entity, Name, FighterStats, Color {
  * Fighter instance in active battle with potential HP override.
  * Extends Fighter for battle-specific HP tracking.
  */
-export type Combatant = Fighter & MaxHp
+export type Combatant = Fighter & MaxHp;
