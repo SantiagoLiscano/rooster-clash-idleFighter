@@ -21,17 +21,6 @@
     "dev:check": "npm run format && npm run typecheck && npm run lint:fix",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "prettier --write",
-      "tsc --noEmit --incremental false",
-      "vitest related --run"
-    ],
-    "*.{json,css,md}": [
-      "prettier --write"
-    ]
-  },
   "dependencies": {
     "react": "^19.2.4",
     "react-dom": "^19.2.4"

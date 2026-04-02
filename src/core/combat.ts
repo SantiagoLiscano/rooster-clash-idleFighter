@@ -79,15 +79,13 @@ export function resolveAttack(attacker: Combatant, defender: Combatant) {
   const didBlock = Math.random() < blockChance;
 
   const rawEdge = attackPower - defensePower;
-  let damage =
-    rawEdge > 0
-      ? attacker.attack * 0.08 + rawEdge * 0.3
-      : Math.max(2, attacker.attack * 0.04 + rawEdge * 0.08);
+  let damage = Math.max(0, rawEdge);
 
   if (didCrit) damage *= 1.22;
-  if (didBlock) damage *= 0.72;
+  // if (didBlock) damage *= 0.72;
+  if (didBlock) damage *= 0;
 
-  damage = Math.max(2, Math.round(damage));
+  damage = Math.max(0, Math.round(damage));
   defender.hp -= damage;
 
   return {
@@ -233,14 +231,43 @@ async function executeTurn(
     },
   });
 
-  onLog(`${attacker.name}'s turn!`, 'turn');
+  const isPlayerAttacking = attacker.id === left.id;
+  if (isPlayerAttacking) {
+    onLog(`${left.name}'s Attack Phase`, 'turn');
+  } else {
+    onLog(`${left.name}'s Defense Phase`, 'turn');
+  }
   await wait(320);
   if (checkSurrender?.()) return;
 
   const result = resolveAttack(attacker, defender);
-  onLog(
-    `${attacker.name.toLowerCase()} attacks with <b>${result.attackPower}</b> / ${defender.name.toLowerCase()} defends with <b>${result.defensePower}</b>`,
-  );
+  let attackColor = 'inherit';
+  let defenseColor = 'inherit';
+
+  if (isPlayerAttacking) {
+    if (result.attackPower > result.defensePower) {
+      attackColor = 'var(--accent)';
+    } else if (result.defensePower > result.attackPower) {
+      defenseColor = 'var(--danger)';
+    }
+  } else {
+    // Player is defending
+    if (result.defensePower > result.attackPower) {
+      defenseColor = 'var(--accent)';
+    } else if (result.attackPower > result.defensePower) {
+      attackColor = 'var(--danger)';
+    }
+  }
+
+  if (isPlayerAttacking) {
+    onLog(
+      `${left.name} attacks with <b style="color: ${attackColor}">${result.attackPower}</b> / ${right.name} defends with <b style="color: ${defenseColor}">${result.defensePower}</b>`,
+    );
+  } else {
+    onLog(
+      `${left.name} defends with <b style="color: ${defenseColor}">${result.defensePower}</b> / ${right.name} attacks with <b style="color: ${attackColor}">${result.attackPower}</b>`,
+    );
+  }
   await wait(440);
   if (checkSurrender?.()) return;
 
@@ -259,7 +286,7 @@ async function executeTurn(
         target: defender.id === left.id ? 'player' : 'opponent',
         type: 'shield',
       };
-      onLog(`${defender.name} blocks part of the impact.`);
+      onLog(`${defender.name} completely blocks the damage.`);
       await wait(180);
     } else if (result.damage > 0) {
       effectPayload = {

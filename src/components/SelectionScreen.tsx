@@ -18,17 +18,33 @@ export function SelectionScreen({
   return (
     <section className='screen screen--active'>
       <header className='topbar'>
-        <button type='button' className='button button--ghost' onClick={onBack}>
-          Back
-        </button>
-        <div style={{ flex: 1, textAlign: 'center' }}>
-          <p className='eyebrow' style={{ margin: 0, fontSize: '0.9rem' }}>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+          <button
+            type='button'
+            className='button button--ghost'
+            onClick={onBack}
+          >
+            Back
+          </button>
+        </div>
+        <div style={{ textAlign: 'center' }}>
+          <p
+            className='eyebrow'
+            style={{ margin: 0, fontSize: '2rem', whiteSpace: 'nowrap' }}
+          >
             MODULAR ROSTER MANAGEMENT
           </p>
         </div>
-        <div style={{ width: '80px' }}></div>{' '}
-        {/* Placeholder para mantener el centrado */}
-        <span className='pill'>React + Vite</span>
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+          }}
+        >
+          <span className='pill'>React + Vite</span>
+        </div>
       </header>
 
       <div className='selection-layout'>

@@ -197,7 +197,7 @@ input {
   justify-content: center;
   gap: 14px;
   overflow-x: auto;
-  padding-bottom: 12px;
+  padding: 16px;
 }
 
 .fighter-option {
@@ -410,7 +410,7 @@ input {
 }
 
 .log-entry--turn {
-  text-align: center;
+  text-align: left;
   font-weight: bold;
   font-size: 1.2rem;
   color: var(--brand-strong);

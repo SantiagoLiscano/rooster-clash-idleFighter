@@ -17,6 +17,21 @@ export function FighterCard({
     >
       <div className='fighter-name-row'>
         <h4 className='fighter-title'>{fighter.name}</h4>
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '8px',
+          marginBottom: '16px',
+        }}
+      >
+        <div
+          className='color-gallo-badge'
+          style={{ backgroundColor: fighter.color, margin: 0 }}
+        ></div>
         {playerSide === 'player' && onEditColor && (
           <div className='fighter-edit-actions'>
             <span
@@ -31,11 +46,6 @@ export function FighterCard({
           </div>
         )}
       </div>
-
-      <div
-        className='color-gallo-badge color-gallo-badge--centered'
-        style={{ backgroundColor: fighter.color }}
-      ></div>
 
       <div className='fighter-level-pill'>Lvl {fighter.level}</div>
 
