@@ -87,6 +87,37 @@ function createFighter({
   xp = 0,
 }: Pick<Fighter, 'id' | 'name' | 'rarity' | 'archetype'> &
   Pick<Partial<Fighter>, 'level' | 'xp'>): Fighter {
+  const baseStats = { ...archetypes[archetype] };
+
+  // 1. Rarity multiplier for base stats
+  const rarityMult = rarity === 'rare' ? 1.15 : rarity === 'enemy' ? 1.05 : 1.0;
+  baseStats.hp = Math.round(baseStats.hp * rarityMult);
+  baseStats.attack = Math.round(baseStats.attack * rarityMult);
+  baseStats.defense = Math.round(baseStats.defense * rarityMult);
+  baseStats.speed = Math.round(baseStats.speed * rarityMult);
+
+  // 2. Strong variability trade-offs between Attack, Defense, and Speed
+  // We perform 2 exchanges of up to 20 points, allowing up to 40 points difference.
+  const tradeStats = ['attack', 'defense', 'speed'] as const;
+  for (let i = 0; i < 2; i++) {
+    const fromStat = tradeStats[Math.floor(Math.random() * 3)];
+    let toStat = tradeStats[Math.floor(Math.random() * 3)];
+    while (toStat === fromStat) {
+      toStat = tradeStats[Math.floor(Math.random() * 3)];
+    }
+
+    const shift = Math.floor(Math.random() * 21); // 0 to 20 points traded
+    if (baseStats[fromStat] - shift >= 10) {
+      // ensure no stat completely drops to 0
+      baseStats[fromStat] -= shift;
+      baseStats[toStat] += shift;
+    }
+  }
+
+  // 3. Small HP variance (+/- archetype variance)
+  const hpVariance = baseStats.hp * baseStats.variance;
+  baseStats.hp += Math.round((Math.random() * 2 - 1) * hpVariance);
+
   return {
     id,
     name,
@@ -95,7 +126,7 @@ function createFighter({
     level,
     xp,
     color: getRandomColor(),
-    ...archetypes[archetype],
+    ...baseStats,
   };
 }
 
