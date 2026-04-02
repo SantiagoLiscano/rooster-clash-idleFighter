@@ -20,26 +20,46 @@ export function BattleArena({
   return (
     <section className='screen screen--active'>
       <header className='topbar'>
-        {isFinished ? (
-          <button
-            type='button'
-            className='button button--ghost'
-            onClick={onBackToRoster}
-          >
-            Back to Roster
-          </button>
-        ) : (
-          <button
-            type='button'
-            className='button button--danger'
-            onClick={onSurrender}
-            disabled={!canSurrender}
-          >
-            🏳️ Surrender
-          </button>
-        )}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+          {isFinished ? (
+            <button
+              type='button'
+              className='button button--ghost'
+              onClick={onBackToRoster}
+            >
+              Back to Roster
+            </button>
+          ) : (
+            <button
+              type='button'
+              className='button button--danger'
+              onClick={onSurrender}
+              disabled={!canSurrender}
+            >
+              🏳️ Surrender
+            </button>
+          )}
+        </div>
 
-        <span className='pill'>{battleState.modeText}</span>
+        <div style={{ textAlign: 'center' }}>
+          <p
+            className='eyebrow'
+            style={{ margin: 0, fontSize: '2rem', whiteSpace: 'nowrap' }}
+          >
+            FIGHT ARENA
+          </p>
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+          }}
+        >
+          <span className='pill'>{battleState.modeText}</span>
+        </div>
       </header>
 
       <div className='arena'>
