@@ -69,9 +69,12 @@ input {
 
 .hero-panel h1,
 .topbar h2,
-.panel-heading h3,
-.fighter-card h3 {
+.panel-heading h3 {
   margin: 0;
+}
+
+.fighter-card h3 {
+  margin: 0 0 16px 0;
 }
 
 .hero-panel h1 {
@@ -737,4 +740,69 @@ input {
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   z-index: 10;
+}
+
+/* Arena Mobile Settings: Stats-Only View */
+@media (max-width: 600px) {
+  .visual-gallo-container {
+    display: none !important;
+  }
+
+  /* Reducir altura del panel de combate */
+  .fighter-card {
+    padding: 12px 16px !important;
+  }
+
+  /* Centrar animaciones sobre el card de estadísticas */
+  .escudo-animacion {
+    top: 50% !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translate(-50%, -50%) !important;
+    width: 60px !important;
+  }
+
+  .garras-animacion {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90px !important;
+  }
+
+  /* Ajuste de Topbar Responsive */
+  .topbar {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding-bottom: 24px !important;
+  }
+
+  .topbar > div:nth-child(1) {
+    order: 2; /* El botón pasa abajo */
+    width: 100%;
+    display: flex;
+    justify-content: flex-start !important;
+  }
+
+  .topbar > div:nth-child(2) {
+    order: 1; /* El título pasa arriba */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .selection-title {
+    font-size: 1.2rem !important; /* Ligeramente mayor para legibilidad */
+  }
+
+  /* Battle Log Layout on Mobile */
+  .log-entry {
+    font-size: 14px !important;
+  }
+
+  .log-entry--turn,
+  .log-entry--winner,
+  .log-entry--system {
+    font-size: 16px !important;
+  }
 }

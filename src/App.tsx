@@ -101,14 +101,18 @@ export default function App() {
   }
 
   function openSelection(
-    nextRoster = rooster,
-    nextOpponents = opponents,
-    nextRefreshDate = lastRefreshDate,
-    nextIcuTimestamp = icuTimestamp,
+    nextRoster?: Fighter[],
+    nextOpponents?: Fighter[],
+    nextRefreshDate?: string,
+    nextIcuTimestamp?: number,
   ) {
-    setRooster(nextRoster);
+    setRooster(nextRoster ?? rooster);
     setOpponents(
-      nextOpponents.length > 0 ? nextOpponents : generateOpponents(),
+      nextOpponents && nextOpponents.length > 0
+        ? nextOpponents
+        : nextOpponents
+          ? generateOpponents()
+          : opponents,
     );
     setLastRefreshDate(nextRefreshDate);
     setIcuTimestamp(nextIcuTimestamp);
@@ -124,6 +128,7 @@ export default function App() {
     clearGame();
     const freshRoster = cloneRoster(starterRoster);
     const freshOpponents = generateOpponents();
+    setBattleLog([]); // Limpiar log al iniciar nueva partida
     openSelection(freshRoster, freshOpponents, undefined, undefined);
   }
 

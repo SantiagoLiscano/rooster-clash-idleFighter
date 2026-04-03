@@ -21,7 +21,7 @@ export function FighterPanel({
 
   return (
     <article
-      className={`fighter-card fighter-card--${playerSide}`}
+      className={`fighter-card fighter-card--${playerSide} ${effect === 'dodge' ? 'esquivar-animado' : ''}`}
       style={{ position: 'relative' }}
     >
       {/* Animaciones SVG dinámicas */}
@@ -44,7 +44,7 @@ export function FighterPanel({
         {playerSide === 'player' ? 'Player' : 'Opponent'}
       </p>
       <h3>{fighter.name}</h3>
-      <div className={effect === 'dodge' ? 'esquivar-animado' : ''}>
+      <div>
         <VisualGallo
           type={image}
           color={fighter.color}

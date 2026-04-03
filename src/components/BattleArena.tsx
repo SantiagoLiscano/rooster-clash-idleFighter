@@ -60,17 +60,7 @@ export function BattleArena({
             FIGHT ARENA
           </p>
         </div>
-
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-          }}
-        >
-          <span className='pill'>{battleState.modeText}</span>
-        </div>
+        <div style={{ flex: 1 }} />
       </header>
 
       <div className='arena'>

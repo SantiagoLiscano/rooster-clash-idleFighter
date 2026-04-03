@@ -32,16 +32,7 @@ export function SelectionScreen({
         <div style={{ textAlign: 'center' }}>
           <p className='eyebrow selection-title'>MODULAR ROSTER MANAGEMENT</p>
         </div>
-        <div
-          style={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-          }}
-        >
-          <span className='pill'>React + Vite</span>
-        </div>
+        <div style={{ flex: 1 }} />
       </header>
 
       <div className='selection-layout'>
