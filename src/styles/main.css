@@ -180,6 +180,21 @@ input {
   flex-wrap: wrap;
 }
 
+.selection-title {
+  margin: 0;
+  font-size: 2rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .selection-title {
+    font-size: 1.1rem;
+    white-space: normal;
+    line-height: 1.2;
+    padding: 0 10px;
+  }
+}
+
 .selection-layout {
   display: flex;
   flex-direction: column;

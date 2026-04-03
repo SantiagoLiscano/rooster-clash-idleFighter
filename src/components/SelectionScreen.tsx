@@ -30,12 +30,7 @@ export function SelectionScreen({
           </button>
         </div>
         <div style={{ textAlign: 'center' }}>
-          <p
-            className='eyebrow'
-            style={{ margin: 0, fontSize: '2rem', whiteSpace: 'nowrap' }}
-          >
-            MODULAR ROSTER MANAGEMENT
-          </p>
+          <p className='eyebrow selection-title'>MODULAR ROSTER MANAGEMENT</p>
         </div>
         <div
           style={{
