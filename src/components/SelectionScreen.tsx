@@ -15,6 +15,7 @@ export function SelectionScreen({
   canStartBattle,
   onOpenColorEditor,
   hasRefreshedToday,
+  isIcuActive,
 }: SelectionScreenProps) {
   return (
     <section className='screen screen--active'>
@@ -49,6 +50,23 @@ export function SelectionScreen({
       </header>
 
       <div className='selection-layout'>
+        {isIcuActive && (
+          <div
+            style={{
+              background: 'var(--danger)',
+              color: 'white',
+              textAlign: 'center',
+              padding: '16px',
+              borderRadius: 'var(--radius-md)',
+              fontWeight: 'bold',
+              fontSize: '1.2rem',
+              boxShadow: '0 4px 12px rgba(180, 60, 47, 0.3)',
+            }}
+          >
+            Your team was rushed to the ICU, please wait 24 hours for their
+            recovery
+          </div>
+        )}
         <section className='panel'>
           <div className='panel-heading'>
             <div>

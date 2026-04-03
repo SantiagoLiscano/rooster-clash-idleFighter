@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { BattleArena } from './components/BattleArena.jsx';
 import { ColorEditorModal } from './components/ColorEditorModal.jsx';
@@ -22,6 +22,7 @@ function getInitialGameState() {
   return {
     roster: cloneRoster(starterRoster),
     opponents: generateOpponents(),
+    icuTimestamp: undefined,
   };
 }
 
@@ -35,6 +36,9 @@ export default function App() {
   );
   const [lastRefreshDate, setLastRefreshDate] = useState<string | undefined>(
     () => getInitialGameState().lastRefreshDate,
+  );
+  const [icuTimestamp, setIcuTimestamp] = useState<number | undefined>(
+    () => getInitialGameState().icuTimestamp,
   );
   const [selectedPlayerId, setSelectedPlayerId] = useState<Entity['id'] | null>(
     null,
@@ -58,6 +62,31 @@ export default function App() {
   const [canSurrender, setCanSurrender] = useState(false);
   const [isBattleFinished, setIsBattleFinished] = useState(false);
 
+  // ICU Recovery Effect
+  useEffect(() => {
+    if (!icuTimestamp) return;
+
+    const checkRecovery = () => {
+      if (Date.now() - icuTimestamp >= 86400000) {
+        setRooster((prev) => {
+          const fullHealing = prev.map((f) => ({ ...f, hp: f.maxHp }));
+          saveGame({
+            roster: fullHealing,
+            opponents,
+            lastRefreshDate,
+            icuTimestamp: undefined,
+          });
+          return fullHealing;
+        });
+        setIcuTimestamp(undefined);
+      }
+    };
+
+    checkRecovery();
+    const interval = setInterval(checkRecovery, 60000);
+    return () => clearInterval(interval);
+  }, [icuTimestamp, opponents, lastRefreshDate]);
+
   const selectedPlayer =
     rooster.find((fighter) => fighter.id === selectedPlayerId) ?? null;
   const selectedOpponent =
@@ -75,12 +104,14 @@ export default function App() {
     nextRoster = rooster,
     nextOpponents = opponents,
     nextRefreshDate = lastRefreshDate,
+    nextIcuTimestamp = icuTimestamp,
   ) {
     setRooster(nextRoster);
     setOpponents(
       nextOpponents.length > 0 ? nextOpponents : generateOpponents(),
     );
     setLastRefreshDate(nextRefreshDate);
+    setIcuTimestamp(nextIcuTimestamp);
     setSelectedPlayerId(null);
     setSelectedOpponentId(null);
     setScreen('selection');
@@ -93,7 +124,7 @@ export default function App() {
     clearGame();
     const freshRoster = cloneRoster(starterRoster);
     const freshOpponents = generateOpponents();
-    openSelection(freshRoster, freshOpponents, undefined);
+    openSelection(freshRoster, freshOpponents, undefined, undefined);
   }
 
   function handleContinue() {
@@ -103,9 +134,15 @@ export default function App() {
         saved.roster,
         saved.opponents || generateOpponents(),
         saved.lastRefreshDate,
+        saved.icuTimestamp,
       );
     } else {
-      openSelection(cloneRoster(starterRoster), generateOpponents(), undefined);
+      openSelection(
+        cloneRoster(starterRoster),
+        generateOpponents(),
+        undefined,
+        undefined,
+      );
     }
   }
 
@@ -132,6 +169,7 @@ export default function App() {
       roster: rooster,
       opponents: newOpponents,
       lastRefreshDate: today,
+      icuTimestamp,
     });
   }
 
@@ -141,7 +179,12 @@ export default function App() {
       f.id === fighterId ? { ...f, color: newColorHex } : f,
     );
     setRooster(updatedRoster);
-    saveGame({ roster: updatedRoster, opponents, lastRefreshDate });
+    saveGame({
+      roster: updatedRoster,
+      opponents,
+      lastRefreshDate,
+      icuTimestamp,
+    });
     setColorEditorFighterId(null);
   }
 
@@ -202,11 +245,19 @@ export default function App() {
     setIsBattleFinished(true);
 
     const updatedRoster = structuredClone(rooster);
+    const didPlayerWin =
+      !surrenderedRef.current && result.winner?.id === selectedPlayer.id;
+    let hadInjuredRoostersToHeal = false;
 
     // Recovery for non-selected roosters
     updatedRoster.forEach((f) => {
       if (f.id !== selectedPlayer.id) {
-        f.hp = Math.min(f.maxHp, Math.ceil(f.hp + f.maxHp * 0.2));
+        if (f.hp < f.maxHp) {
+          hadInjuredRoostersToHeal = true;
+        }
+        if (didPlayerWin) {
+          f.hp = Math.min(f.maxHp, Math.ceil(f.hp + f.maxHp * 0.2));
+        }
       }
     });
 
@@ -245,6 +296,20 @@ export default function App() {
       appendLog('Double KO. There is no winner this round.', 'system');
     }
 
+    if (!didPlayerWin && hadInjuredRoostersToHeal) {
+      appendLog(
+        "There was some complications with your Roosters recovery, they didn't restored any health",
+        'system',
+      );
+    }
+
+    const allDead = updatedRoster.every((f) => f.hp <= 0);
+    let newIcuTimestamp = icuTimestamp;
+    if (allDead && !icuTimestamp) {
+      newIcuTimestamp = Date.now();
+      setIcuTimestamp(newIcuTimestamp);
+    }
+
     const newOpponents = generateOpponents();
     setRooster(updatedRoster);
     setOpponents(newOpponents);
@@ -252,6 +317,7 @@ export default function App() {
       roster: updatedRoster,
       opponents: newOpponents,
       lastRefreshDate,
+      icuTimestamp: newIcuTimestamp,
     });
     setStatusText('Progress saved');
   }
@@ -294,6 +360,7 @@ export default function App() {
           hasRefreshedToday={
             lastRefreshDate === new Date().toISOString().split('T')[0]
           }
+          isIcuActive={!!icuTimestamp}
         />
       )}
       {screen === 'battle' && battleState && (

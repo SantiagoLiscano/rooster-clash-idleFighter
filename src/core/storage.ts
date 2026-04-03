@@ -8,6 +8,7 @@ export interface GameState {
   roster: Fighter[];
   opponents?: Fighter[];
   lastRefreshDate?: string;
+  icuTimestamp?: number;
 }
 
 export function loadGame(): GameState | null {
