@@ -230,9 +230,7 @@ export default function App() {
       );
       if (rewards) {
         appendLog(`${result.winner.name} WINS the battle!`, 'winner');
-        appendLog(
-          `XP gained: ${rewards.gainedExp}. Modifier: ${rewards.modifier}.`,
-        );
+        appendLog(`XP gained: ${rewards.gainedExp}.`);
         if (rewards.leveledUp) {
           appendLog(
             `${rewards.fighter.name} reaches level ${rewards.fighter.level}!`,
