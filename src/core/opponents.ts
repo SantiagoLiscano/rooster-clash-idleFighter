@@ -21,6 +21,7 @@ export function generateOpponents(count = 2): Fighter[] {
         rivalArchetypes[index % rivalArchetypes.length];
       const template = archetypes[archetype];
       const swing = () => randomInt(-4, 4);
+      const baseHp = template.hp + swing();
 
       return {
         id: `rival-${index}-${name.toLowerCase().replace(/\s+/g, '-')}`,
@@ -29,7 +30,8 @@ export function generateOpponents(count = 2): Fighter[] {
         archetype,
         level: randomInt(1, 4),
         xp: 0,
-        hp: template.hp + swing(),
+        hp: baseHp,
+        maxHp: baseHp,
         attack: template.attack + swing(),
         defense: template.defense + swing(),
         speed: template.speed + swing(),

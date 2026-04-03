@@ -56,7 +56,7 @@ export type FighterRarity = 'common' | 'rare' | 'enemy';
  * Complete fighter entity with all stats and metadata.
  * Used in roster, battles, and persistence.
  */
-export interface Fighter extends Entity, Name, FighterStats, Color {
+export interface Fighter extends Entity, Name, FighterStats, Color, MaxHp {
   /** Rarity tier determining strength and availability */
   rarity: FighterRarity;
   /** Combat archetype defining stat distribution */
@@ -71,4 +71,4 @@ export interface Fighter extends Entity, Name, FighterStats, Color {
  * Fighter instance in active battle with potential HP override.
  * Extends Fighter for battle-specific HP tracking.
  */
-export type Combatant = Fighter & MaxHp;
+export type Combatant = Fighter;

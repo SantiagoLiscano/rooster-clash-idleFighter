@@ -83,6 +83,10 @@ export type SelectionScreenProps = {
   canStartBattle: boolean;
   /** Open color editor callback */
   onOpenColorEditor: (id: string) => void;
+  /** Whether the player has already refreshed opponents today */
+  hasRefreshedToday: boolean;
+  /** Whether the roster is currently locked in ICU */
+  isIcuActive?: boolean;
 };
 
 /**

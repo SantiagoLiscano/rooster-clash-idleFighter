@@ -127,6 +127,7 @@ function createFighter({
     xp,
     color: getRandomColor(),
     ...baseStats,
+    maxHp: baseStats.hp,
   };
 }
 

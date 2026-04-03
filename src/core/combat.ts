@@ -10,7 +10,7 @@ const battleImages = {
 } as const;
 
 export function createCombatant(fighter: Fighter): Combatant {
-  return { ...structuredClone(fighter), hp: fighter.hp, maxHp: fighter.hp };
+  return { ...structuredClone(fighter), hp: fighter.hp, maxHp: fighter.maxHp };
 }
 
 export function rollDice(): number {
@@ -195,6 +195,19 @@ export async function runLocalCombat({
     if (left.hp > 0 && right.hp > 0 && !(checkSurrender && checkSurrender())) {
       await wait(250);
     }
+  }
+
+  if (checkSurrender && checkSurrender()) {
+    left.hp = 0;
+    onUpdate({
+      left,
+      images: {
+        player: battleImages.player.ko,
+        opponent:
+          right.hp <= 0 ? battleImages.opponent.ko : battleImages.opponent.idle,
+      },
+      effect: null,
+    });
   }
 
   const winner = left.hp > 0 ? left : right.hp > 0 ? right : null;
