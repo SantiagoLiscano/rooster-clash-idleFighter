@@ -13,10 +13,21 @@ export function BattleArena({
   isFinished,
 }: BattleArenaProps) {
   const logEndRef = useRef<HTMLDivElement | null>(null);
+  const isAutoScrollEnabledRef = useRef(true);
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isAutoScrollEnabledRef.current) {
+      logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [battleLog]);
+
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget;
+    const isAtBottom =
+      Math.abs(target.scrollHeight - target.scrollTop - target.clientHeight) <
+      35;
+    isAutoScrollEnabledRef.current = isAtBottom;
+  };
   return (
     <section className='screen screen--active'>
       <header className='topbar'>
@@ -89,7 +100,7 @@ export function BattleArena({
       </div>
 
       <section className='panel'>
-        <div className='battle-log'>
+        <div className='battle-log' onScroll={handleScroll}>
           {battleLog.map((entry) => {
             let classNames = 'log-entry';
             if (entry.type === 'system') classNames += ' log-entry--system';
