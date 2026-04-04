@@ -134,6 +134,7 @@ export function applyVictoryRewards(
     fighter.xp -= neededExp;
     fighter.level += 1;
     fighter.hp += 5;
+    fighter.maxHp += 5;
     fighter.attack = Math.min(200, fighter.attack + 2);
     fighter.defense = Math.min(200, fighter.defense + 2);
     fighter.speed = Math.min(200, fighter.speed + 1);
