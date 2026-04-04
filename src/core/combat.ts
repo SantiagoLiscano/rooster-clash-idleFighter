@@ -13,8 +13,8 @@ export function createCombatant(fighter: Fighter): Combatant {
   return { ...structuredClone(fighter), hp: fighter.hp, maxHp: fighter.maxHp };
 }
 
-export function rollDice(): number {
-  return (Math.floor(Math.random() * 6) + 1) * 10;
+export function rollDice(sides = 6): number {
+  return (Math.floor(Math.random() * sides) + 1) * 10;
 }
 
 function randomMultiplier(variance = 0.04): number {
@@ -36,11 +36,22 @@ export function calculateInitiative(
   return scoreA >= scoreB ? [a, b] : [b, a];
 }
 
-export function resolveAttack(attacker: Combatant, defender: Combatant) {
+export function resolveAttack(
+  attacker: Combatant,
+  defender: Combatant,
+  isRampage = false,
+) {
+  const sides = isRampage ? 18 : 6;
   const attackTempo = randomMultiplier(attacker.variance);
   const defenseTempo = randomMultiplier(defender.variance);
-  const attackRoll = rollDice();
-  const defenseRoll = rollDice();
+  const attackRoll = rollDice(sides);
+  let defenseRoll = rollDice(sides);
+
+  // In Rampage Mode, defense is penalized to ensure the stalemate ends
+  if (isRampage) {
+    defenseRoll = Math.floor(defenseRoll * (2 / 3));
+  }
+
   const attackPower =
     attacker.attack * attackTempo + attackRoll + attacker.speed * 0.18;
   const defensePower =
@@ -166,8 +177,14 @@ export async function runLocalCombat({
   onLog(`${first.name} takes initiative thanks to superior speed.`);
   await wait(450);
 
+  let stalemateCounter = 0;
+  let lastTotalHp = left.hp + right.hp;
+  let isRampage = false;
+
   while (left.hp > 0 && right.hp > 0) {
     if (checkSurrender && checkSurrender()) break;
+
+    // Phase 1
     await executeTurn(
       first,
       second,
@@ -175,12 +192,32 @@ export async function runLocalCombat({
       right,
       onUpdate,
       onLog,
+      isRampage,
       checkSurrender,
     );
+
+    // Check stalemate
+    const currentTotalHp1 = left.hp + right.hp;
+    if (currentTotalHp1 === lastTotalHp) {
+      stalemateCounter++;
+    } else {
+      stalemateCounter = 0;
+      lastTotalHp = currentTotalHp1;
+    }
+
+    if (!isRampage && stalemateCounter >= 8) {
+      isRampage = true;
+      onLog(
+        'RAMPAGE MODE ACTIVATED! Luck will now decide the fate of this battle.',
+        'system',
+      );
+    }
+
     if (onTurnComplete) onTurnComplete();
     if (left.hp <= 0 || right.hp <= 0 || (checkSurrender && checkSurrender()))
       break;
 
+    // Phase 2
     await executeTurn(
       second,
       first,
@@ -188,8 +225,27 @@ export async function runLocalCombat({
       right,
       onUpdate,
       onLog,
+      isRampage,
       checkSurrender,
     );
+
+    // Check stalemate
+    const currentTotalHp2 = left.hp + right.hp;
+    if (currentTotalHp2 === lastTotalHp) {
+      stalemateCounter++;
+    } else {
+      stalemateCounter = 0;
+      lastTotalHp = currentTotalHp2;
+    }
+
+    if (!isRampage && stalemateCounter >= 8) {
+      isRampage = true;
+      onLog(
+        'RAMPAGE MODE ACTIVATED! Luck will now decide the fate of this battle.',
+        'system',
+      );
+    }
+
     if (onTurnComplete) onTurnComplete();
 
     if (left.hp > 0 && right.hp > 0 && !(checkSurrender && checkSurrender())) {
@@ -221,6 +277,7 @@ async function executeTurn(
   right: Combatant,
   onUpdate: (state: Partial<BattleState>) => void,
   onLog: (message: string, type?: string) => void,
+  isRampage: boolean,
   checkSurrender?: () => boolean,
 ) {
   // 1. Mostrar pose de ataque y limpiar efectos anteriores
@@ -242,6 +299,7 @@ async function executeTurn(
             ? battleImages.opponent.ko
             : battleImages.opponent.idle,
     },
+    isRampage,
   });
 
   const isPlayerAttacking = attacker.id === left.id;
@@ -253,7 +311,7 @@ async function executeTurn(
   await wait(320);
   if (checkSurrender?.()) return;
 
-  const result = resolveAttack(attacker, defender);
+  const result = resolveAttack(attacker, defender, isRampage);
   let attackColor = 'inherit';
   let defenseColor = 'inherit';
 
@@ -343,6 +401,7 @@ async function executeTurn(
             ? battleImages.opponent.ko
             : battleImages.opponent.idle,
     },
+    isRampage,
   });
 
   // 4. Si hubo un efecto, esperar 1 segundo para que la animación termine
@@ -363,6 +422,7 @@ async function executeTurn(
       opponent:
         right.hp <= 0 ? battleImages.opponent.ko : battleImages.opponent.idle,
     },
+    isRampage,
   });
 
   await wait(1320);

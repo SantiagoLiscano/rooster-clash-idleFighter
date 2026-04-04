@@ -28,57 +28,57 @@ export function getRandomColor(): string {
 export const archetypes: Record<FighterArchetypes, FighterStats> = {
   balanced: {
     hp: 105,
-    attack: 70,
-    defense: 68,
-    speed: 67,
+    attack: 72,
+    defense: 72,
+    speed: 72,
     critBonus: 0.01,
     dodgeBonus: 0.01,
     blockBonus: 0.02,
     variance: 0.04,
   },
   tank: {
-    hp: 118,
-    attack: 58,
-    defense: 84,
-    speed: 50,
+    hp: 125,
+    attack: 55,
+    defense: 88,
+    speed: 45,
     critBonus: 0,
     dodgeBonus: 0,
     blockBonus: 0.08,
     variance: 0.03,
   },
   agile: {
-    hp: 96,
-    attack: 78,
-    defense: 54,
-    speed: 82,
+    hp: 92,
+    attack: 75,
+    defense: 50,
+    speed: 90,
     critBonus: 0.03,
-    dodgeBonus: 0.06,
+    dodgeBonus: 0.08,
     blockBonus: 0,
-    variance: 0.06,
+    variance: 0.05,
   },
   aggressive: {
-    hp: 101,
-    attack: 82,
-    defense: 56,
-    speed: 71,
-    critBonus: 0.05,
+    hp: 98,
+    attack: 88,
+    defense: 45,
+    speed: 70,
+    critBonus: 0.06,
     dodgeBonus: 0.01,
     blockBonus: -0.01,
-    variance: 0.08,
+    variance: 0.07,
   },
   technical: {
-    hp: 103,
-    attack: 67,
-    defense: 71,
-    speed: 69,
+    hp: 100,
+    attack: 65,
+    defense: 82,
+    speed: 62,
     critBonus: 0.02,
     dodgeBonus: 0.02,
-    blockBonus: 0.04,
+    blockBonus: 0.05,
     variance: 0.02,
   },
 };
 
-function createFighter({
+export function createFighter({
   id,
   name,
   rarity,
@@ -96,23 +96,22 @@ function createFighter({
   baseStats.defense = Math.round(baseStats.defense * rarityMult);
   baseStats.speed = Math.round(baseStats.speed * rarityMult);
 
-  // 2. Strong variability trade-offs between Attack, Defense, and Speed
-  // We perform 2 exchanges of up to 20 points, allowing up to 40 points difference.
+  // 2. Randomized Primary Stat Selection for Specialization
   const tradeStats = ['attack', 'defense', 'speed'] as const;
-  for (let i = 0; i < 2; i++) {
-    const fromStat = tradeStats[Math.floor(Math.random() * 3)];
-    let toStat = tradeStats[Math.floor(Math.random() * 3)];
-    while (toStat === fromStat) {
-      toStat = tradeStats[Math.floor(Math.random() * 3)];
-    }
+  const primaryStat = tradeStats[Math.floor(Math.random() * 3)];
 
-    const shift = Math.floor(Math.random() * 21); // 0 to 20 points traded
-    if (baseStats[fromStat] - shift >= 10) {
-      // ensure no stat completely drops to 0
-      baseStats[fromStat] -= shift;
-      baseStats[toStat] += shift;
+  // Apply Specialization Pass
+  tradeStats.forEach((s) => {
+    if (s === primaryStat) {
+      // Bonus of +10 to +18 to the primary (half of previous +20 to +35)
+      const bonus = 10 + Math.floor(Math.random() * 9);
+      baseStats[s] += bonus;
+    } else {
+      // Penalty of -5 to -10 for secondary stats (half of previous -10 to -20)
+      const penalty = 5 + Math.floor(Math.random() * 6);
+      baseStats[s] = Math.max(20, baseStats[s] - penalty);
     }
-  }
+  });
 
   // 3. Small HP variance (+/- archetype variance)
   const hpVariance = baseStats.hp * baseStats.variance;
@@ -131,26 +130,31 @@ function createFighter({
   };
 }
 
-export const starterRoster: Fighter[] = [
-  createFighter({
-    id: 'golden-rooster',
-    name: 'Golden Rooster',
-    rarity: 'common',
-    archetype: 'balanced',
-  }),
-  createFighter({
-    id: 'iron-beak',
-    name: 'Iron Beak',
-    rarity: 'common',
-    archetype: 'tank',
-  }),
-  createFighter({
-    id: 'swift-shadow',
-    name: 'Swift Shadow',
-    rarity: 'rare',
-    archetype: 'agile',
-  }),
-];
+export function generateStarterRoster(): Fighter[] {
+  const starterNames = [
+    'Golden Rooster',
+    'Iron Beak',
+    'Swift Shadow',
+    'Bold Claw',
+    'Storm Wing',
+  ];
+  const archetypeValues = Object.keys(archetypes) as FighterArchetypes[];
+
+  return [0, 1, 2].map((i) => {
+    // Pick random archetype
+    const archetype =
+      archetypeValues[Math.floor(Math.random() * archetypeValues.length)];
+    // Pick random name
+    const name = starterNames[Math.floor(Math.random() * starterNames.length)];
+
+    return createFighter({
+      id: `starter-${i}-${Date.now()}`,
+      name,
+      rarity: i === 2 ? 'rare' : 'common',
+      archetype,
+    });
+  });
+}
 
 export const rivalPool: string[] = [
   'Black Fury',

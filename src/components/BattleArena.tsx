@@ -15,20 +15,30 @@ export function BattleArena({
   const logContainerRef = useRef<HTMLDivElement | null>(null);
   const isAutoScrollEnabledRef = useRef(true);
 
+  const isProgrammaticScrollRef = useRef(false);
+
   useEffect(() => {
     if (isAutoScrollEnabledRef.current && logContainerRef.current) {
+      isProgrammaticScrollRef.current = true;
       logContainerRef.current.scrollTo({
         top: logContainerRef.current.scrollHeight,
-        behavior: 'smooth',
+        behavior: 'auto',
       });
+      // Small timeout to reset the programmatic flag after the scroll event has likely fired
+      const timeout = setTimeout(() => {
+        isProgrammaticScrollRef.current = false;
+      }, 50);
+      return () => clearTimeout(timeout);
     }
   }, [battleLog]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    if (isProgrammaticScrollRef.current) return;
+
     const target = e.currentTarget;
+    // Más robusto para Safari y navegadores móviles con scroll elástico
     const isAtBottom =
-      Math.abs(target.scrollHeight - target.scrollTop - target.clientHeight) <
-      35;
+      target.scrollHeight - target.scrollTop - target.clientHeight < 50;
     isAutoScrollEnabledRef.current = isAtBottom;
   };
   const actionButtons = (
@@ -87,7 +97,11 @@ export function BattleArena({
           }
         />
         <div className='arena-center'>
-          <span className='versus'>VS</span>
+          {battleState.isRampage ? (
+            <span className='versus versus--rampage'>RAMPAGE!!</span>
+          ) : (
+            <span className='versus'>VS</span>
+          )}
         </div>
         <FighterPanel
           playerSide='opponent'

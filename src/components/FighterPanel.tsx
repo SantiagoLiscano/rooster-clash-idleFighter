@@ -59,10 +59,10 @@ export function FighterPanel({
             className='health__bar'
             style={{ width: `${percentage}%`, background: healthBackground }}
           />
+          <p className='health__label'>
+            {Math.max(0, fighter.hp)}/{fighter.maxHp} HP
+          </p>
         </div>
-        <p>
-          {Math.max(0, fighter.hp)}/{fighter.maxHp} HP
-        </p>
       </div>
       <dl className='stats-list'>
         <div>

@@ -53,6 +53,8 @@ export type BattleState = {
   effect: BattleEffect;
   /** Current battle mode text (attack/defend/wait) */
   modeText: string;
+  /** Whether Rampage Mode is active */
+  isRampage?: boolean;
 };
 
 /**

@@ -7,7 +7,7 @@ import { SelectionScreen } from './components/SelectionScreen.jsx';
 import { applyVictoryRewards, runLocalCombat } from './core/combat';
 import { generateOpponents } from './core/opponents';
 import { clearGame, hasSavedGame, loadGame, saveGame } from './core/storage';
-import { cloneRoster, starterRoster } from './data/characters';
+import { generateStarterRoster } from './data/characters';
 import {
   BattleLogEntry,
   BattleLogEntryType,
@@ -20,7 +20,7 @@ function getInitialGameState() {
   const saved = loadGame();
   if (saved) return saved;
   return {
-    roster: cloneRoster(starterRoster),
+    roster: generateStarterRoster(),
     opponents: generateOpponents(),
     icuTimestamp: undefined,
   };
@@ -133,7 +133,7 @@ export default function App() {
 
   function handleNewGame() {
     clearGame();
-    const freshRoster = cloneRoster(starterRoster);
+    const freshRoster = generateStarterRoster();
     const freshOpponents = generateOpponents();
     setBattleLog([]); // Limpiar log al iniciar nueva partida
     openSelection(freshRoster, freshOpponents, undefined, undefined);
@@ -150,7 +150,7 @@ export default function App() {
       );
     } else {
       openSelection(
-        cloneRoster(starterRoster),
+        generateStarterRoster(),
         generateOpponents(),
         undefined,
         undefined,
@@ -223,6 +223,7 @@ export default function App() {
       images: { player: 'defensa', opponent: 'defensa' },
       effect: null,
       modeText: 'Local Mode',
+      isRampage: false,
     });
 
     const result = await runLocalCombat({
@@ -249,12 +250,19 @@ export default function App() {
             effect:
               payload.effect !== undefined ? payload.effect : current.effect,
             modeText: 'Local Mode',
+            isRampage:
+              payload.isRampage !== undefined
+                ? payload.isRampage
+                : current.isRampage,
           };
         });
       },
     });
 
     setIsBattleFinished(true);
+    setBattleState((current) =>
+      current ? { ...current, isRampage: false } : current,
+    );
 
     const updatedRoster = structuredClone(rooster);
     const didPlayerWin =
