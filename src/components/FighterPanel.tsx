@@ -40,10 +40,12 @@ export function FighterPanel({
         />
       )}
 
-      <p className='eyebrow'>
-        {playerSide === 'player' ? 'Player' : 'Opponent'}
-      </p>
-      <h3>{fighter.name}</h3>
+      <div className='fighter-panel-header'>
+        <h3>{fighter.name}</h3>
+        <span className='eyebrow'>
+          {playerSide === 'player' ? 'Player' : 'Opponent'}
+        </span>
+      </div>
       <div>
         <VisualGallo
           type={image}

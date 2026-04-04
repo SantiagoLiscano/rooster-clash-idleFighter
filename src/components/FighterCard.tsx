@@ -18,105 +18,96 @@ export function FighterCard({
       style={{ position: 'relative' }}
     >
       {isKo && <div className='ko-overlay'>Not available</div>}
-      <div className='fighter-name-row'>
-        <h4 className='fighter-title'>{fighter.name}</h4>
-      </div>
+      <div className='fighter-card-header'>
+        <div className='fighter-header-left'>
+          <h4 className='fighter-title'>{fighter.name}</h4>
+          <div
+            className='color-gallo-badge'
+            style={{ backgroundColor: fighter.color }}
+          ></div>
+          {playerSide === 'player' && onEditColor && (
+            <div className='fighter-edit-actions'>
+              <span
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEditColor();
+                }}
+                title='Edit Color'
+              >
+                🎨
+              </span>
+            </div>
+          )}
+        </div>
 
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '8px',
-          marginBottom: '16px',
-        }}
-      >
-        <div
-          className='color-gallo-badge'
-          style={{ backgroundColor: fighter.color, margin: 0 }}
-        ></div>
-        {playerSide === 'player' && onEditColor && (
-          <div className='fighter-edit-actions'>
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                onEditColor();
-              }}
-              title='Edit Color'
-            >
-              🎨
-            </span>
+        {playerSide === 'opponent' ? (
+          <div
+            className='fighter-level-pill'
+            style={{ backgroundColor: '#e63946', color: 'white' }}
+          >
+            Rival
           </div>
+        ) : (
+          <div className='fighter-level-pill'>Lvl {fighter.level}</div>
         )}
       </div>
 
-      {playerSide === 'opponent' ? (
-        <div
-          className='fighter-level-pill'
-          style={{ backgroundColor: '#e63946', color: 'white' }}
-        >
-          Rival
-        </div>
-      ) : (
-        <div className='fighter-level-pill'>Lvl {fighter.level}</div>
-      )}
-
       <div className='fighter-stats-list' style={{ fontSize: '1rem' }}>
-        {playerSide === 'player' ? (
-          <div className='hp-container' style={{ marginBottom: '8px' }}>
+        <div className='hp-container'>
+          <div className='hp-label-row'>
+            <span>
+              <span className='hide-on-mobile'>❤️</span> HP:
+            </span>
+            <span>
+              {fighter.hp}/{fighter.maxHp}
+            </span>
+          </div>
+          <div className='hp-bar-bg'>
             <div
+              className='hp-bar-fill'
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginBottom: '4px',
+                width: `${Math.max(0, Math.min(100, (fighter.hp / fighter.maxHp) * 100))}%`,
               }}
-            >
-              <span>❤️ HP:</span>
+            />
+          </div>
+        </div>
+
+        {playerSide === 'player' && showXp && (
+          <div className='xp-container'>
+            <div className='xp-label-row'>
               <span>
-                {fighter.hp}/{fighter.maxHp}
+                <span className='hide-on-mobile'>⭐</span> XP:
+              </span>
+              <span>
+                {fighter.xp}/{fighter.level * 100}
               </span>
             </div>
-            <div
-              className='hp-bar-bg'
-              style={{
-                width: '100%',
-                height: '8px',
-                backgroundColor: '#444',
-                borderRadius: '4px',
-                overflow: 'hidden',
-              }}
-            >
+            <div className='xp-bar-bg'>
               <div
-                className='hp-bar-fill'
+                className='xp-bar-fill'
                 style={{
-                  height: '100%',
-                  backgroundColor: '#4ade80',
-                  transition: 'width 0.3s ease',
-                  width: `${Math.max(0, Math.min(100, (fighter.hp / fighter.maxHp) * 100))}%`,
+                  width: `${Math.max(0, Math.min(100, (fighter.xp / (fighter.level * 100)) * 100))}%`,
                 }}
               />
             </div>
           </div>
-        ) : (
-          <p>
-            ❤️ HP: {fighter.hp}/{fighter.maxHp}
-          </p>
         )}
-        <p>⚔️ Attack: {fighter.attack}</p>
-        <p>🛡️ Defense: {fighter.defense}</p>
-        <p>⚡ Speed: {fighter.speed}</p>
-      </div>
 
-      <hr className='stat-divider' />
-
-      {showXp && (
-        <div className='fighter-xp-row'>
-          ⭐{' '}
-          <i>
-            XP: {fighter.xp}/{fighter.level * 100}
-          </i>
+        <div className='fighter-stats-row'>
+          <div className='stat-item'>
+            <span className='stat-label'>ATK</span>
+            <span className='stat-value'>{fighter.attack}</span>
+          </div>
+          <div className='stat-item'>
+            <span className='stat-label'>DEF</span>
+            <span className='stat-value'>{fighter.defense}</span>
+          </div>
+          <div className='stat-item'>
+            <span className='stat-label'>SPD</span>
+            <span className='stat-value'>{fighter.speed}</span>
+          </div>
         </div>
-      )}
+      </div>
     </article>
   );
 }

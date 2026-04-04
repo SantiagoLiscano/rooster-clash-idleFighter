@@ -12,12 +12,15 @@ export function BattleArena({
   canSurrender,
   isFinished,
 }: BattleArenaProps) {
-  const logEndRef = useRef<HTMLDivElement | null>(null);
+  const logContainerRef = useRef<HTMLDivElement | null>(null);
   const isAutoScrollEnabledRef = useRef(true);
 
   useEffect(() => {
-    if (isAutoScrollEnabledRef.current) {
-      logEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (isAutoScrollEnabledRef.current && logContainerRef.current) {
+      logContainerRef.current.scrollTo({
+        top: logContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
     }
   }, [battleLog]);
 
@@ -28,33 +31,42 @@ export function BattleArena({
       35;
     isAutoScrollEnabledRef.current = isAtBottom;
   };
+  const actionButtons = (
+    <>
+      {isFinished ? (
+        <button
+          type='button'
+          className='button button--ghost'
+          onClick={onBackToRoster}
+        >
+          Back to Roster
+        </button>
+      ) : (
+        <button
+          type='button'
+          className='button button--danger'
+          onClick={onSurrender}
+          disabled={!canSurrender}
+        >
+          🏳️ Surrender
+        </button>
+      )}
+    </>
+  );
+
   return (
     <section className='screen screen--active'>
       <header className='topbar'>
-        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
-          {isFinished ? (
-            <button
-              type='button'
-              className='button button--ghost'
-              onClick={onBackToRoster}
-            >
-              Back to Roster
-            </button>
-          ) : (
-            <button
-              type='button'
-              className='button button--danger'
-              onClick={onSurrender}
-              disabled={!canSurrender}
-            >
-              🏳️ Surrender
-            </button>
-          )}
+        <div
+          className='hide-on-mobile'
+          style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}
+        >
+          {actionButtons}
         </div>
 
         <div style={{ textAlign: 'center' }}>
           <p
-            className='eyebrow'
+            className='eyebrow hide-on-mobile'
             style={{ margin: 0, fontSize: '2rem', whiteSpace: 'nowrap' }}
           >
             FIGHT ARENA
@@ -90,7 +102,11 @@ export function BattleArena({
       </div>
 
       <section className='panel'>
-        <div className='battle-log' onScroll={handleScroll}>
+        <div
+          className='battle-log'
+          ref={logContainerRef}
+          onScroll={handleScroll}
+        >
           {battleLog.map((entry) => {
             let classNames = 'log-entry';
             if (entry.type === 'system') classNames += ' log-entry--system';
@@ -106,9 +122,10 @@ export function BattleArena({
               />
             );
           })}
-          <div ref={logEndRef} />
         </div>
       </section>
+
+      <footer className='battle-footer show-on-mobile'>{actionButtons}</footer>
     </section>
   );
 }

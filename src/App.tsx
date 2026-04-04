@@ -87,6 +87,13 @@ export default function App() {
     return () => clearInterval(interval);
   }, [icuTimestamp, opponents, lastRefreshDate]);
 
+  // Scroll to top when entering battle screen
+  useEffect(() => {
+    if (screen === 'battle') {
+      window.scrollTo(0, 0);
+    }
+  }, [screen]);
+
   const selectedPlayer =
     rooster.find((fighter) => fighter.id === selectedPlayerId) ?? null;
   const selectedOpponent =
@@ -338,7 +345,7 @@ export default function App() {
   }
 
   return (
-    <div id='app'>
+    <div id='app' className={screen === 'battle' ? 'is-battle-screen' : ''}>
       {screen === 'menu' && (
         <MenuScreen
           onNewGame={handleNewGame}
