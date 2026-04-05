@@ -28,14 +28,14 @@ export function FighterPanel({
       {effect === 'shield' && (
         <img
           className={`escudo-animacion escudo-${playerSide}`}
-          src='/escudoEdited.svg'
+          src={`${import.meta.env.BASE_URL}escudoEdited.svg`}
           alt='Bloqueo'
         />
       )}
       {effect === 'claws' && (
         <img
           className='garras-animacion zarpazo-animado'
-          src='/garras.svg'
+          src={`${import.meta.env.BASE_URL}garras.svg`}
           alt='Impacto'
         />
       )}

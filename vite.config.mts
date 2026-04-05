@@ -39,5 +39,5 @@ export default defineConfig({
     setupFiles: './vitest.setup.ts',
     css: true,
   },
-  base: process.env.VITE_BASE_PATH || '/rooster-clash-idleFighter',
+  base: process.env.VITE_BASE_PATH || '/',
 });

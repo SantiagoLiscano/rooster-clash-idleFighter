@@ -97,7 +97,6 @@ export function resolveAttack(
   if (didBlock) damage *= 0;
 
   damage = Math.max(0, Math.round(damage));
-  defender.hp -= damage;
 
   return {
     attackPower: Math.round(attackPower),
@@ -383,10 +382,10 @@ async function executeTurn(
     }
   }
 
-  // 3. Inyectar el efecto visual al componente
+  // 3. Inyectar el efecto visual al componente (con HP actual)
   onUpdate({
-    left,
-    right,
+    left: structuredClone(left),
+    right: structuredClone(right),
     effect: effectPayload,
     images: {
       player:
@@ -405,18 +404,24 @@ async function executeTurn(
     isRampage,
   });
 
-  // 4. Si hubo un efecto, esperar 1 segundo para que la animación termine
+  // 4. Si hubo daño, esperar el impacto antes de reducir el HP
+  if (effectPayload?.type === 'claws' || effectPayload?.type === 'shield') {
+    await wait(330);
+    defender.hp = Math.max(0, defender.hp - result.damage);
+  }
+
+  // 5. Esperar el resto de la animación
   if (effectPayload) {
-    await wait(1000);
+    await wait(effectPayload.type === 'dodge' ? 800 : 670);
   } else {
     await wait(320);
   }
   if (checkSurrender?.()) return;
 
-  // 5. Ocultar efecto y regresar a pose normal (idle) o de derrota
+  // 6. Ocultar efecto y mostrar NUEVA vida
   onUpdate({
-    left,
-    right,
+    left: structuredClone(left),
+    right: structuredClone(right),
     effect: null,
     images: {
       player: left.hp <= 0 ? battleImages.player.ko : battleImages.player.idle,

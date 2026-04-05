@@ -132,6 +132,15 @@ export default function App() {
   }
 
   function handleNewGame() {
+    if (hasSavedGame()) {
+      if (
+        !window.confirm(
+          'A saved game already exists. Creating a new game will permanently delete your current progress. Are you sure?',
+        )
+      ) {
+        return;
+      }
+    }
     clearGame();
     const freshRoster = generateStarterRoster();
     const freshOpponents = generateOpponents();
@@ -260,9 +269,6 @@ export default function App() {
     });
 
     setIsBattleFinished(true);
-    setBattleState((current) =>
-      current ? { ...current, isRampage: false } : current,
-    );
 
     const updatedRoster = structuredClone(rooster);
     const didPlayerWin =

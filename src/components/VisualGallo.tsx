@@ -10,7 +10,7 @@ export function VisualGallo({ type, color, isRight }: VisualGalloProps) {
     const loadSvg = async () => {
       try {
         // Aquí usa la ruta definitiva a public/
-        const res = await fetch(`/gallo_${type}.svg`);
+        const res = await fetch(`${import.meta.env.BASE_URL}gallo_${type}.svg`);
         if (!res.ok) throw new Error('SVG no encontrado');
         const text = await res.text();
 

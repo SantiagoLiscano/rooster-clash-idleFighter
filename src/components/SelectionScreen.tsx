@@ -128,7 +128,7 @@ export function SelectionScreen({
           onClick={onStartBattle}
           disabled={!canStartBattle}
         >
-          Battle!
+          Fight!
         </button>
       </div>
     </section>
